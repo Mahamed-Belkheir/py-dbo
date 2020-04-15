@@ -1,6 +1,6 @@
 from dbo.dbo import DBO
 
-class Model(DBO):
+class Model(DBO, DBO.sql.types):
 
     @classmethod
     def find(cls, query_obj = {} ,**query):
@@ -27,13 +27,18 @@ class Model(DBO):
         sql = cls.sql.delete(cls.__name__, query_obj)
         return sql
 
-    def get_subclasses(self):
-        classes =  self.__class__.__subclasses__()
-        classes_attributes = [cls.get_attributes() for cls in classes]
+    @classmethod
+    def createTable(cls):
+        return cls.sql.createTable(cls.__name__, cls.get_attributes())
+
+    @classmethod
+    def get_subclasses(cls):
+        classes =  cls.__subclasses__()
+        classes_attributes = [item.get_attributes() for item in classes]
         print(classes_attributes)
     
     @classmethod
     def get_attributes(cls):
-        return (cls.__name__, dict(filter(lambda attr: "_" not in attr[0], cls.__dict__.items())))
+        return dict(filter(lambda attr: "_" not in attr[0], cls.__dict__.items()))
 
 

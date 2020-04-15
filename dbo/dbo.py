@@ -4,10 +4,9 @@ from dbo.dialects import dialects
 
 class DBO:
 
-    sql = dialects['mysql']
 
-    # def __init__(self, dialect):
-    #     DBO.sql = dialects[dialect]
+    def __init__(self, dialect):
+        DBO.sql = dialects[dialect]
 
     def generate_class_sql(self):
         pass
