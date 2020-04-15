@@ -5,27 +5,29 @@ class Model(DBO):
 
 
     @classmethod
-    def find(cls, query_obj = None ,**query):
-        sql = cls.sql.find(cls.__name__)
-        if (query):
-            sql += cls.sql.and_query(**query)
-        elif (query_obj):
-            sql += cls.sql.and_query(**query_obj)
+    def find(cls, query_obj = {} ,**query):
+        query_obj.update(query)
+        sql = cls.sql.find(cls.__name__, query_obj)
         return sql
 
     @classmethod
     def insert(cls, query_obj = {} ,**query):
-        sql = cls.sql.insert(cls.__name__, **query_obj, **query)
+        query_obj.update(query)
+        sql = cls.sql.insert(cls.__name__, query_obj)
         return sql
         
 
     @classmethod
-    def update(clf):
-        pass
+    def update(cls, values, query_obj = {}, **query):
+        query_obj.update(query)
+        sql = cls.sql.update(cls.__name__, values, query_obj)
+        return sql
 
     @classmethod
-    def delete(clf):
-        pass
+    def delete(cls, query_obj = {}, **query):
+        query_obj.update(query)
+        sql = cls.sql.delete(cls.__name__, query_obj)
+        return sql
 
     def get_subclasses(self):
         classes =  self.__class__.__subclasses__()
@@ -42,4 +44,7 @@ class Person(Model):
 
 
 print(Person.find({'name': "john"}))
-print(Person.insert(name='john', age=10))
+print(Person.insert({'name': "john", 'age': 19}))
+print(Person.delete())
+print(Person.delete(name = 'bob'))
+print(Person.update({'name': "adam"}, name="john"))
