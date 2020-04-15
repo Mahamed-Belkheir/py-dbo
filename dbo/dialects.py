@@ -1,19 +1,19 @@
 class Mysql_Types:
 
     @staticmethod
-    def varchar(length):
+    def inhr_varchar(length):
         return f"VARCHAR({length})"
 
     @staticmethod
-    def text(length):
+    def inhr_text(length):
         return f"TEXT({length})"
 
     @staticmethod
-    def integer(length):
+    def inhr_integer(length):
         return f"INT({length})"
 
     @staticmethod
-    def date():
+    def inhr_date():
         return "DATETIME"
 
 

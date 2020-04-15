@@ -1,7 +1,6 @@
-from dbo.dbo import DBO
+from dbo.dbo import DBO, Model
 DBO('mysql')
 
-from dbo.model import Model
 
 class Person(Model):
     name = Model.varchar(255)
