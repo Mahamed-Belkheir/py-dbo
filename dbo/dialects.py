@@ -31,7 +31,7 @@ class Dialect_Mysql:
 
     @staticmethod
     def insert(table, values):
-        return f"INSERT ({','.join(values.keys())}) INTO {table} VALUES ({','.join([str(x) for x in values.values()])})"
+        return f"INSERT INTO `{table}` ({','.join(map(lambda x: '`'+x+'`', values.keys()))})  VALUES ({temp(values)})"
 
     @staticmethod
     def delete(table, query={}):
@@ -48,11 +48,11 @@ class Dialect_Mysql:
 
     @staticmethod
     def createTable(table, attributes):
-        return f"""CREATE TABLE {table} (
-            id BIGINT,
-            {','.join([item[0]+" "+item[1] for item in attributes.items()])},
-            PRIMARY KEY (id)
+        sql = f"""CREATE TABLE IF NOT EXISTS {table} (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            {','.join([item[0]+" "+item[1] for item in attributes.items()])}
             )"""
+        return sql
 
 
     
@@ -61,8 +61,9 @@ class Dialect_Mysql:
 def and_query(query):
     return " WHERE (" + dict_sep('AND', query) +")"
 def dict_sep(seperator, dictionary):
-    return seperator.join([item[0]+'='+str(item[1]) for item in dictionary.items()])
-
+    return seperator.join([item[0]+'=\''+str(item[1])+'\'' for item in dictionary.items()])
+def temp(values):
+    return ','.join([ '\'' + str(x) + '\'' for x in values.values()])
 dialects = {
     "mysql": Dialect_Mysql,
 }
