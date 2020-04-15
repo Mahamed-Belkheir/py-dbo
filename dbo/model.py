@@ -1,8 +1,6 @@
-from dbo import DBO
+from dbo.dbo import DBO
 
 class Model(DBO):
-
-
 
     @classmethod
     def find(cls, query_obj = {} ,**query):
@@ -39,12 +37,3 @@ class Model(DBO):
         return (cls.__name__, dict(filter(lambda attr: "_" not in attr[0], cls.__dict__.items())))
 
 
-class Person(Model):
-    pass
-
-
-print(Person.find({'name': "john"}))
-print(Person.insert({'name': "john", 'age': 19}))
-print(Person.delete())
-print(Person.delete(name = 'bob'))
-print(Person.update({'name': "adam"}, name="john"))

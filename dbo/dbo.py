@@ -1,4 +1,4 @@
-from dialects import dialects
+from dbo.dialects import dialects
 
 
 
