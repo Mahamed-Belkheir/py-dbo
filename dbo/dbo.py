@@ -19,7 +19,7 @@ class DBO:
             import mysql.connector
             DBO.connection = mysql.connector.connect(**connection)
         else:
-            raise Exception("Unsupported SQL Dialct!")
+            raise Exception("Unsupported SQL Dialect!")
     
     @classmethod
     def execute(cls, query):
@@ -42,13 +42,19 @@ class DBO:
 
 class Model(DBO):
 
+
+    def __init__(self, data):
+        attr = ["id", *self.__class__.get_key_attributes()]
+        for key, value in zip(attr, data):
+            self.__dict__[key] = value 
+
     @classmethod
     def find(cls, query_obj = None ,**query):
         if (query_obj is None):
             query_obj = {}
         query_obj.update(query)
         sql = cls.sql.find(cls.__name__, query_obj)
-        return cls.execute(sql).fetchall()
+        return cls.factory(cls.execute(sql).fetchall())
 
     @classmethod
     def insert(cls, query_obj = None ,**query):
@@ -94,4 +100,10 @@ class Model(DBO):
     def get_attributes(cls):
         return dict(filter(lambda attr: "_" not in attr[0], cls.__dict__.items()))
 
+    @classmethod
+    def get_key_attributes(cls):
+        return filter(lambda attr: "_" not in attr, cls.__dict__.keys())
 
+    @classmethod
+    def factory(cls, data):
+        return [cls(item) for item in data]

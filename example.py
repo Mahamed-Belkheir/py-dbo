@@ -16,10 +16,10 @@ class Person(Model):
 
 
 
-print(Person.insert({'name': "bob", 'age': 19}))
-print(Person.find())
-print(Person.update({'age': 10}, name="bob"))
-print(Person.find())
+# print(Person.insert({'name': "bob", 'age': 19}))
+print(Person.find(name='bob')[0].__dict__)
+# print(Person.update({'age': 10}, name="bob"))
+# print(Person.find())
 
 # print(Person.createTable())
 # print(Person.insert({'name': "John", 'age': 19}))
