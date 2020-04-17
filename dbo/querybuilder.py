@@ -10,12 +10,13 @@ class QueryBuilder:
     }
 
     def __init__(self,
-    table:str, query_type:str, sql,
+    table:str, query_type:str, sql, factory=None,
     conditions:dict=None, values=None, targets:list=None
     ):
         self.table = table
         self.query_type = query_type
         self.sql = sql
+        self.factory = factory
         self.conditions = []
         self.values = []
         if conditions:
@@ -41,5 +42,12 @@ class QueryBuilder:
         return self
 
 
-    def execute(self):
-        return self.queries[self.query_type](self)
+    async def execute(self):
+        sql = self.queries[self.query_type](self)
+        result = await self.sql.c.invoke(sql)
+        if (self.query_type == "select"):
+            result = self.factory(result.fetchall())
+        return result
+
+    def __await__(self):
+        return self.execute().__await__()

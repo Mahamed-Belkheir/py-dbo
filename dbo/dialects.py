@@ -84,8 +84,3 @@ dialects = {
     "mysql": Dialect_Mysql,
 }
 
-print(where_query([
-    ('AND', {'name': 'bob', 'age': 21}),
-    ('OR', {'name': 'adam', 'age': 34}),
-    ('OR', {'job': 'worker'})
-]))

@@ -10,14 +10,14 @@ class DBO:
         Model_class = DBO.__subclasses__()[0]
         Model_class.sql = dialects[dialect]
         self.extender(Model_class, Model.sql.types)
-        self.connector_initializer(dialect, connection)
+        Model_class.sql.c = self.connector_initializer(dialect, connection)
         
         
 
     def connector_initializer(self, dialect, connection):
         if (dialect == 'mysql'):
-            import mysql.connector
-            DBO.connection = mysql.connector.connect(**connection)
+            import dbo.db_wrappers.mysql as connector
+            return connector.MysqlConnector(connection)
         else:
             raise Exception("Unsupported SQL Dialect!")
     
@@ -57,6 +57,7 @@ class Model(DBO):
             cls.__name__,
             "select",
             cls.sql,
+            cls.factory,
             conditions = query_obj
         )
         return builder
