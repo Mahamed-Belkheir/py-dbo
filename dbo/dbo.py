@@ -1,5 +1,5 @@
 from dbo.dialects import dialects
-
+from dbo.querybuilder import QueryBuilder
 
 
 class DBO:
@@ -53,16 +53,32 @@ class Model(DBO):
         if (query_obj is None):
             query_obj = {}
         query_obj.update(query)
-        sql = cls.sql.find(cls.__name__, query_obj)
-        return cls.factory(cls.execute(sql).fetchall())
+        builder = QueryBuilder(
+            cls.__name__,
+            "select",
+            cls.sql,
+            conditions = query_obj
+        )
+        return builder
+        # sql = cls.sql.find(cls.__name__, query_obj)
+        # return cls.factory(cls.execute(sql).fetchall())
 
     @classmethod
     def insert(cls, query_obj = None ,**query):
         if (query_obj is None):
             query_obj = {}
-        query_obj.update(query)
-        sql = cls.sql.insert(cls.__name__, query_obj)
-        return cls.execute(sql)
+            query_obj.update(query)
+        
+        builder = QueryBuilder(
+            cls.__name__,
+            "insert",
+            cls.sql,
+            values = query_obj
+        )
+        return builder
+
+        # sql = cls.sql.insert(cls.__name__, query_obj)
+        # return cls.execute(sql)
 
         
 
@@ -70,19 +86,36 @@ class Model(DBO):
     def update(cls, values, query_obj = None, **query):
         if (query_obj is None):
             query_obj = {}
-        query_obj.update(query)
-        sql = cls.sql.update(cls.__name__, values, query_obj)
-        return cls.execute(sql)
+            query_obj.update(query)
+        
+        builder = QueryBuilder(
+            cls.__name__,
+            "update",
+            cls.sql,
+            values = values,
+            conditions = query_obj
+        )
+        return builder
+
+        # sql = cls.sql.update(cls.__name__, values, query_obj)
+        # return cls.execute(sql)
 
 
     @classmethod
     def delete(cls, query_obj = None, **query):
         if (query_obj is None):
             query_obj = {}
-        print('query here', query_obj)
         query_obj.update(query)
-        sql = cls.sql.delete(cls.__name__, query_obj)
-        return cls.execute(sql)
+
+        builder = QueryBuilder(
+            cls.__name__,
+            "delete",
+            cls.sql,
+            conditions = query_obj
+        )
+        return builder
+        # sql = cls.sql.delete(cls.__name__, query_obj)
+        # return cls.execute(sql)
         
 
     @classmethod

@@ -23,26 +23,26 @@ class Dialect_Mysql:
     types = Mysql_Types
 
     @staticmethod
-    def find(table, query={}):
+    def find(table, queries=None):
         sql = f"SELECT * FROM {table}"
-        if (query):
-            sql += and_query(query)
+        if (queries):
+            sql += where_query(queries)
         return sql
 
     @staticmethod
     def insert(table, values):
-        return f"INSERT INTO `{table}` ({','.join(map(lambda x: '`'+x+'`', values.keys()))})  VALUES ({temp(values)})"
+        return f"INSERT INTO `{table}` ({','.join(map(lambda x: '`'+x+'`', values[0].keys()))})  VALUES {values_get(values)}"
 
     @staticmethod
-    def delete(table, query={}):
+    def delete(table, query=None):
         sql = f"DELETE FROM {table}"
         if (query):
-            sql += and_query(query)
+            sql += where_query(query)
         return sql
 
     @staticmethod
     def update(table, values, query):
-        return f"UPDATE {table} SET {dict_sep(',', values)}{and_query(query)}"
+        return f"UPDATE {table} SET {update_sep(values)} {where_query(query)}"
 
 
 
@@ -60,11 +60,32 @@ class Dialect_Mysql:
 
 def and_query(query):
     return " WHERE (" + dict_sep('AND', query) +")"
+
+def where_query(queries):
+    sql = " WHERE (" + dict_sep(", ", queries[0][1]) +")"
+    for query in queries[1:]:
+        sql += " "+query[0] +" (" + dict_sep(", ", query[1])+")"
+    return sql
+
 def dict_sep(seperator, dictionary):
     return seperator.join([item[0]+'=\''+str(item[1])+'\'' for item in dictionary.items()])
-def temp(values):
-    return ','.join([ '\'' + str(x) + '\'' for x in values.values()])
+
+def update_sep(values):
+    return ', '.join(['`'+item[0]+'`'+'=\''+str(item[1])+'\'' for item in values.items()])
+
+def values_get(values):
+    sql = []
+    for item in values:
+        sql.append('(' + ','.join([ '\'' + str(x) + '\'' for x in item.values()]) + ')')
+    return ",".join(sql)
+    
+
 dialects = {
     "mysql": Dialect_Mysql,
 }
 
+print(where_query([
+    ('AND', {'name': 'bob', 'age': 21}),
+    ('OR', {'name': 'adam', 'age': 34}),
+    ('OR', {'job': 'worker'})
+]))
