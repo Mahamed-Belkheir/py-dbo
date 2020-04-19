@@ -1,6 +1,5 @@
 from dbo.dbo import DBO, Model
-from dbo.dialects import Dialect_Mysql
-from dbo.querybuilder import QueryBuilder
+
 import asyncio
 
 DBO('mysql',
@@ -20,8 +19,15 @@ class Person(Model):
 
 
 async def main():
+    await Person.insert({"name": "Adam", "age": 90})
     x = await Person.find()
     print(x[0].greet())
+    await Person.update({"age": 21}, name="Adam")
+    x = await Person.find()
+    print(x[0].__dict__)
+    await Person.delete()
+    x = await Person.find()
+    print(x)
 
 
 if __name__ == "__main__":
