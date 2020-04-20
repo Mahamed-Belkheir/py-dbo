@@ -1,26 +1,15 @@
-class Mysql_Types:
-
-    @staticmethod
-    def inhr_varchar(length):
-        return f"VARCHAR({length})"
-
-    @staticmethod
-    def inhr_text(length):
-        return f"TEXT({length})"
-
-    @staticmethod
-    def inhr_integer(length):
-        return f"INT({length})"
-
-    @staticmethod
-    def inhr_date():
-        return "DATETIME"
-
 
 
 class Dialect_Mysql:
-
-    types = Mysql_Types
+    
+    types = {
+        'varchar': lambda length: f'VARCHAR({length})',
+        'text': lambda length: f'TEXT({length})',
+        'integer': lambda length: f'INT({length})',
+        'float': lambda length: f'FLOAT({length})',
+        'boolean': lambda length: f'BOOL',
+        'datetime': lambda length: f'DATETIME',
+    }
 
     @staticmethod
     def find(table, queries=None):

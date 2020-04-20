@@ -27,7 +27,7 @@ async def main():
     print(x[0].__dict__)
     await Person.delete()
     x = await Person.find()
-    print(x)
+    print(Person.get_key_attributes())
 
 
 if __name__ == "__main__":

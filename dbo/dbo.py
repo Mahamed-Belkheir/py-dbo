@@ -29,9 +29,8 @@ class DBO:
         return cursor
 
     def extender(self, sub_class, super_class):
-        for item in super_class.__dict__.items():
-            if('inhr_' in item[0]):
-                setattr(sub_class, item[0][5:], item[1])
+        for key, value in super_class.items():
+            setattr(sub_class, key, value)
 
 
     @classmethod
@@ -132,11 +131,11 @@ class Model(DBO):
     
     @classmethod
     def get_attributes(cls):
-        return dict(filter(lambda attr: "_" not in attr[0], cls.__dict__.items()))
+        return dict(filter(lambda attr: ("_" not in attr[0] and callable(attr[1]) is not True), cls.__dict__.items()))
 
     @classmethod
     def get_key_attributes(cls):
-        return filter(lambda attr: "_" not in attr, cls.__dict__.keys())
+        return list(cls.get_attributes().keys())
 
     @classmethod
     def factory(cls, data):
