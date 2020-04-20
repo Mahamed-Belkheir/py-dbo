@@ -29,7 +29,7 @@ async def main():
     people = await Person.find()
     for person in people:
         print(person.greet())
-    youngsters = await Person.find(('age', '<', 30))
+    youngsters = await Person.find(('age', '<', 30)).orwhere(('age', '>', '40'))
     for person in youngsters:
         print(person.greet())
 
