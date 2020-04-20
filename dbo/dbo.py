@@ -79,8 +79,19 @@ class Model(DBO):
         )
         return builder
 
-        # sql = cls.sql.insert(cls.__name__, query_obj)
-        # return cls.execute(sql)
+    @classmethod
+    def upsert(cls, query_obj = None ,**query):
+        if (query_obj is None):
+            query_obj = {}
+            query_obj.update(query)
+        
+        builder = QueryBuilder(
+            cls.__name__,
+            "upsert",
+            cls.sql,
+            values = query_obj
+        )
+        return builder
 
         
 
@@ -147,3 +158,9 @@ class Model(DBO):
     @classmethod
     def factory(cls, data):
         return [cls(item) for item in data]
+
+
+
+    def get_values(self):
+        return dict(filter(lambda attr: ("_" not in attr[0] and callable(attr[1]) is not True), self.__dict__.items()))
+

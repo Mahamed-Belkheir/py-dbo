@@ -33,7 +33,9 @@ class Dialect_Mysql:
     def update(table, values, query):
         return f"UPDATE {table} SET {update_sep(values)} {where_query(query)}"
 
-
+    @classmethod
+    def upsert(cls, table, values):
+        return cls.insert(table, values) + " ON DUPLICATE KEY UPDATE "+ ','.join([key + f' = VALUES({key})' for key in values[0].keys()])
 
     @staticmethod
     def createtable(table, attributes):

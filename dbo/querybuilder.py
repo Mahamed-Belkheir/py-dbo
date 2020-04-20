@@ -5,6 +5,7 @@ class QueryBuilder:
     queries = {
         "select": lambda o: o.sql.find(o.table, o.conditions),
         "insert": lambda o: o.sql.insert(o.table, o.values),
+        "upsert": lambda o: o.sql.upsert(o.table, o.values),
         "update": lambda o: o.sql.update(o.table, o.values[0], o.conditions),
         "delete": lambda o: o.sql.delete(o.table, o.conditions),
         "create": lambda o: o.sql.createtable(o.table, o.columns)
@@ -48,7 +49,6 @@ class QueryBuilder:
 
     async def execute(self):
         sql = self.queries[self.query_type](self)
-        print(sql)
         result = await self.sql.c.invoke(sql)
         if (self.query_type == "select"):
             result = self.factory(result.fetchall())
