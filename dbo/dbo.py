@@ -119,9 +119,14 @@ class Model(DBO):
         
 
     @classmethod
-    def createTable(cls):
-        sql = cls.sql.createTable(cls.__name__, cls.get_attributes())
-        return cls.execute(sql)
+    def sync(cls):
+        builder = QueryBuilder(
+            cls.__name__,
+            "create",
+            cls.sql,
+            columns = cls.get_attributes()
+        )
+        return builder
 
     @classmethod
     def get_subclasses(cls):

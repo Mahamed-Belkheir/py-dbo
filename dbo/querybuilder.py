@@ -6,12 +6,14 @@ class QueryBuilder:
         "select": lambda o: o.sql.find(o.table, o.conditions),
         "insert": lambda o: o.sql.insert(o.table, o.values),
         "update": lambda o: o.sql.update(o.table, o.values[0], o.conditions),
-        "delete": lambda o: o.sql.delete(o.table, o.conditions)
+        "delete": lambda o: o.sql.delete(o.table, o.conditions),
+        "create": lambda o: o.sql.createtable(o.table, o.columns)
     }
 
     def __init__(self,
     table:str, query_type:str, sql, factory=None,
-    conditions:dict=None, values=None, targets:list=None
+    conditions:dict=None, values=None, targets:list=None,
+    columns=None
     ):
         self.table = table
         self.query_type = query_type
@@ -28,6 +30,8 @@ class QueryBuilder:
                 self.values.append(values)
         if targets:
             self.targets = targets
+        if columns:
+            self.columns = columns
 
     def orwhere(self, conditions=None, **conds):
         if(conditions is None):

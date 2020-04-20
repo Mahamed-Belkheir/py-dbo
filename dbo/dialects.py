@@ -36,7 +36,7 @@ class Dialect_Mysql:
 
 
     @staticmethod
-    def createTable(table, attributes):
+    def createtable(table, attributes):
         sql = f"""CREATE TABLE IF NOT EXISTS {table} (
             id INT AUTO_INCREMENT PRIMARY KEY,
             {','.join([item[0]+" "+item[1] for item in attributes.items()])}

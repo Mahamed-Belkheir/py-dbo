@@ -19,15 +19,7 @@ class Person(Model):
 
 
 async def main():
-    await Person.insert({"name": "Adam", "age": 90})
-    x = await Person.find()
-    print(x[0].greet())
-    await Person.update({"age": 21}, name="Adam")
-    x = await Person.find()
-    print(x[0].__dict__)
-    await Person.delete()
-    x = await Person.find()
-    print(Person.get_key_attributes())
+    await Person.sync()
 
 
 if __name__ == "__main__":
