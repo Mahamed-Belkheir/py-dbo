@@ -1,4 +1,4 @@
-from dbo.dbo import DBO, Model
+from dbo import DBO, Model
 
 import asyncio
 
@@ -20,7 +20,15 @@ class Person(Model):
 
 async def main():
     await Person.sync()
-
+    await Person.insert([
+        {'name': 'Adam', 'age': 23},
+        {'name': 'John', 'age': 19},
+        {'name': 'Bob', 'age': 42},
+        {'name': 'Rick', 'age': 37},
+    ])
+    people = await Person.find()
+    for person in people:
+        print(person.greet())
 
 if __name__ == "__main__":
     asyncio.run(main())
