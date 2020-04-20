@@ -51,10 +51,13 @@ def and_query(query):
     return " WHERE (" + dict_sep('AND', query) +")"
 
 def where_query(queries):
-    sql = " WHERE (" + dict_sep(", ", queries[0][1]) +")"
-    for query in queries[1:]:
-        sql += " "+query[0] +" (" + dict_sep(", ", query[1])+")"
-    return sql
+    sql = ""
+    for query in queries:
+        if type(query[1]) == list or tuple:
+            sql += " "+query[0] +" (" + ''.join([ str(op) for op in query[1] ]) +")"
+        else:
+            sql += " "+query[0] +" (" + dict_sep(", ", query[1])+")"
+    return ' WHERE ' + sql[4:]
 
 def dict_sep(seperator, dictionary):
     return seperator.join([item[0]+'=\''+str(item[1])+'\'' for item in dictionary.items()])

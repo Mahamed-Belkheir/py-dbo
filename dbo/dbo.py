@@ -51,13 +51,15 @@ class Model(DBO):
     def find(cls, query_obj = None ,**query):
         if (query_obj is None):
             query_obj = {}
-        query_obj.update(query)
+            query_obj.update(query)
+
+
         builder = QueryBuilder(
             cls.__name__,
             "select",
             cls.sql,
             cls.factory,
-            conditions = query_obj
+            conditions = query_obj,
         )
         return builder
         # sql = cls.sql.find(cls.__name__, query_obj)

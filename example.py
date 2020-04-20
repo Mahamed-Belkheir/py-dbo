@@ -29,6 +29,9 @@ async def main():
     people = await Person.find()
     for person in people:
         print(person.greet())
+    youngsters = await Person.find(('age', '<', 30))
+    for person in youngsters:
+        print(person.greet())
 
 if __name__ == "__main__":
     asyncio.run(main())

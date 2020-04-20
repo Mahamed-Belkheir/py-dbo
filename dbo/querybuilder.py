@@ -48,6 +48,7 @@ class QueryBuilder:
 
     async def execute(self):
         sql = self.queries[self.query_type](self)
+        print(sql)
         result = await self.sql.c.invoke(sql)
         if (self.query_type == "select"):
             result = self.factory(result.fetchall())
