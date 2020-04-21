@@ -20,7 +20,8 @@ class Dialect_Mysql:
 
     @staticmethod
     def insert(table, values):
-        return f"INSERT INTO `{table}` ({','.join(map(lambda x: '`'+x+'`', values[0].keys()))})  VALUES {values_get(values)}"
+        sql = f"INSERT INTO `{table}` ({','.join(map(lambda x: '`'+x+'`', values[0].keys()))})  VALUES {values_get(values)}"
+        return sql
 
     @staticmethod
     def delete(table, query=None):
@@ -55,11 +56,12 @@ def and_query(query):
 def where_query(queries):
     sql = ""
     for query in queries:
-        if type(query[1]) == list or tuple:
+        if type(query[1]) == list or type(query[1]) == tuple:
             sql += " "+query[0] +" (" + ''.join([ str(op) for op in query[1] ]) +")"
         else:
             sql += " "+query[0] +" (" + dict_sep(", ", query[1])+")"
-    return ' WHERE ' + sql[4:]
+    sql = ' WHERE ' + sql[4:]
+    return sql
 
 def dict_sep(seperator, dictionary):
     return seperator.join([item[0]+'=\''+str(item[1])+'\'' for item in dictionary.items()])

@@ -32,13 +32,31 @@ async def main():
     youngsters = await Person.find(('age', '<', 30)).orwhere(('age', '>', '40'))
     for person in youngsters:
         print(person.greet())
+
     await Person.delete()
+
     await Person.upsert({'name': 'Adam', 'age': 23})
     adam = await Person.find()
-    print(adam[0].id)
+    print(adam[0].greet())
+
     await Person.upsert({'id': adam[0].id, 'name': 'John'})
     adam = await Person.find()
-    print(adam[0].id)
+    print(adam[0].greet())
+
+
+    list_of_persons = await Person.find()
+    print(f'we have {len(list_of_persons)}')
+
+    await list_of_persons[0].delete_self()
+
+    list_of_persons = await Person.find()
+    print(f'we have {len(list_of_persons)}')
+    
+    new_guy = Person({'name': "new guy", 'age': 1000})
+    await new_guy.save()
+    
+    list_of_persons = await Person.find()
+    print(f'we have {len(list_of_persons)}')
 
 if __name__ == "__main__":
     asyncio.run(main())

@@ -43,9 +43,13 @@ class Model(DBO):
 
 
     def __init__(self, data):
-        attr = ["id", *self.__class__.get_key_attributes()]
-        for key, value in zip(attr, data):
-            self.__dict__[key] = value 
+        if (type(data) == tuple):
+            attr = ['id', *self.__class__.get_key_attributes()]
+            for key, value in zip(attr, data):
+                self.__dict__[key] = value 
+        else:
+            for key, value in data.items():
+                self.__dict__[key] = value
 
     @classmethod
     def find(cls, query_obj = None ,**query):
@@ -164,3 +168,9 @@ class Model(DBO):
     def get_values(self):
         return dict(filter(lambda attr: ("_" not in attr[0] and callable(attr[1]) is not True), self.__dict__.items()))
 
+
+    async def save(self):
+        await self.__class__.upsert(self.get_values())
+
+    def delete_self(self):
+        return self.__class__.delete(id=self.id) 
