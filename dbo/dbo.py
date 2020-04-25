@@ -1,6 +1,6 @@
 from dbo.dialects import dialects
 from dbo.querybuilder import QueryBuilder
-
+from dbo.relationships import Mapper
 
 class DBO:
 
@@ -39,7 +39,7 @@ class DBO:
 
 
 
-class Model(DBO):
+class Model(DBO, metaclass=Mapper):
 
 
     def __init__(self, data):
@@ -122,7 +122,7 @@ class Model(DBO):
     def delete(cls, query_obj = None, **query):
         if (query_obj is None):
             query_obj = {}
-        query_obj.update(query)
+            query_obj.update(query)
 
         builder = QueryBuilder(
             cls.__name__,
@@ -149,11 +149,10 @@ class Model(DBO):
     def get_subclasses(cls):
         classes =  cls.__subclasses__()
         classes_attributes = [item.get_attributes() for item in classes]
-        print(classes_attributes)
     
     @classmethod
     def get_attributes(cls):
-        return dict(filter(lambda attr: ("_" not in attr[0] and callable(attr[1]) is not True), cls.__dict__.items()))
+        return dict(filter(lambda attr: ("_" not in attr[0] and type(attr[1]) is str), cls.__dict__.items()))
 
     @classmethod
     def get_key_attributes(cls):

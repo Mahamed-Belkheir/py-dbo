@@ -12,8 +12,12 @@ class Dialect_Mysql:
     }
 
     @staticmethod
-    def find(table, queries=None):
-        sql = f"SELECT * FROM {table}"
+    def find(table, queries=None, include=None):
+        if include is None:
+            include = '*'
+        else:
+            include = ','.join(include)
+        sql = f"SELECT {include} FROM {table}"
         if (queries):
             sql += where_query(queries)
         return sql
@@ -37,6 +41,15 @@ class Dialect_Mysql:
     @classmethod
     def upsert(cls, table, values):
         return cls.insert(table, values) + " ON DUPLICATE KEY UPDATE "+ ','.join([key + f' = VALUES({key})' for key in values[0].keys()])
+
+    @classmethod
+    def inquery(cls, query, inquery, col):
+        starter = "AND"
+        if len(query.conditions) == 0:
+            starter = "WHERE"
+        return f"{query.sql_code()} {starter} {col} IN ({inquery.sql_code()})"
+
+
 
     @staticmethod
     def createtable(table, attributes):
