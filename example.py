@@ -10,34 +10,55 @@ DBO('mysql',
     )
 
 
-class School(Model):
-    name = Model.varchar(255)
-    budget = Model.integer(100)
-
 
 class Person(Model):
     name = Model.varchar(255)
     age = Model.integer(100)
-    school_id = Model.integer(100)
 
     def greet(self):
         return f"Hello, my name is {self.name}"
 
-    def relmap(self=None):
-        return {
-           'school': {
-                'model': School,
-                'from_col': 'school_id',
-                'to_col': 'id' 
-           }
-        }
+
 
 async def main():
     await Person.sync()
-    await School.sync()
-    person_query = Person.find(('age', '<', 18))
-    school_query = School.delete(('budget', '<', 1000))
-    print(Person.school(query=school_query).for_(query=person_query).sql_code())
+    await Person.insert([
+        {'name': 'Adam', 'age': 23},
+        {'name': 'John', 'age': 19},
+        {'name': 'Bob', 'age': 42},
+        {'name': 'Rick', 'age': 37},
+    ])
+    people = await Person.find()
+    for person in people:
+        print(person.greet())
+    youngsters = await Person.find(('age', '<', 30)).orwhere(('age', '>', '40'))
+    for person in youngsters:
+        print(person.greet())
+
+    await Person.delete()
+
+    await Person.upsert({'name': 'Adam', 'age': 23})
+    adam = await Person.find()
+    print(adam[0].greet())
+
+    await Person.upsert({'id': adam[0].id, 'name': 'John'})
+    adam = await Person.find()
+    print(adam[0].greet())
+
+
+    list_of_persons = await Person.find()
+    print(f'we have {len(list_of_persons)}')
+
+    await list_of_persons[0].delete_self()
+
+    list_of_persons = await Person.find()
+    print(f'we have {len(list_of_persons)}')
+    
+    new_guy = Person({'name': "new guy", 'age': 1000})
+    await new_guy.save()
+    
+    list_of_persons = await Person.find()
+    print(f'we have {len(list_of_persons)}')
 
 if __name__ == "__main__":
     asyncio.run(main())
