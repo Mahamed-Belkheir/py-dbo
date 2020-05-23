@@ -14,8 +14,8 @@ class Dialect_Mysql:
         'text': lambda length: f'TEXT({length})',
         'integer': lambda length: f'INT({length})',
         'float': lambda length: f'FLOAT({length})',
-        'boolean': lambda length: f'BOOL',
-        'datetime': lambda length: f'DATETIME',
+        'boolean': lambda: f'BOOL',
+        'datetime': lambda: f'DATETIME',
     }
 
     @classmethod
@@ -95,7 +95,7 @@ class Dialect_Mysql:
 
 def and_query(query):
     """helper function that turns a query dictionary into a string of where clauses"""
-    return " WHERE (" + dict_sep('AND', query) +")"
+    return " WHERE (" + dict_sep(' AND ', query) +")"
 
 def where_query(queries):
     """helper function that generates a where statement, based on multiple queries of different types
@@ -134,8 +134,4 @@ def values_get(values):
     return ",".join(sql)
     
 
-# the dialect strategy dictionary
-dialects = {
-    "mysql": Dialect_Mysql,
-}
 
